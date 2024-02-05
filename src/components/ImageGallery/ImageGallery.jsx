@@ -1,9 +1,13 @@
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
-export const ImageGallery = ({ id, name, number, onDelete }) => {
+export const ImageGallery = ({ images }) => {
   return (
     <ul className="gallery">
-      <ImageGalleryItem />
+      {images.map(({ id, webformatURL }) => {
+        return (
+          <ImageGalleryItem key={id} id={id} webformatURL={webformatURL} />
+        );
+      })}
     </ul>
   );
 };

@@ -1,7 +1,7 @@
-export const ImageGalleryItem = ({ id, name, number, onDelete }) => {
+export const ImageGalleryItem = ({ id, webformatURL }) => {
   return (
     <li className="gallery-item">
-      <img src="" alt="" />
+      <img src={webformatURL} alt="" />
     </li>
   );
 };
