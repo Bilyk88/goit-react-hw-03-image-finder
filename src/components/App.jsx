@@ -6,22 +6,31 @@ import initialContacts from '../contacts.json';
 import { Searchbar } from './Searchbar/Searchbar';
 import { fetchImages } from 'api';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
 
 const storageKey = 'saved-contacts';
 
 export class App extends Component {
   state = {
     images: [],
+    isLoading: false,
+    error: false,
     contacts: initialContacts,
     filter: '',
   };
 
   async componentDidMount() {
     try {
+      this.setState({ isLoading: true, error: false });
       const initialImages = await fetchImages();
       console.log(initialImages);
       this.setState({ images: initialImages });
-    } catch (error) {}
+    } catch (error) {
+      this.setState({ error: true });
+    } finally {
+      this.setState({ isLoading: false });
+    }
 
     // const savedContacts = window.localStorage.getItem(storageKey);
     // if (savedContacts !== null) {
@@ -65,7 +74,7 @@ export class App extends Component {
   };
 
   render() {
-    // const { contacts, filter } = this.state;
+    const { images, isLoading } = this.state;
 
     // const filterContacts = contacts.filter(contact =>
     //   contact.name.toLowerCase().includes(filter.toLowerCase())
@@ -74,17 +83,21 @@ export class App extends Component {
     return (
       <div
         style={{
-          height: '100vh',
-          maxWidth: '460px',
-          padding: '15px',
-          fontSize: 24,
-          color: '#010101',
+          // height: '100vh',
+          // maxWidth: '460px',
+          // padding: '15px',
+          // fontSize: 24,
+          // color: '#010101',
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gridGap: '16px',
+          paddingBottom: '24px',
         }}
       >
         <Searchbar />
-        {this.state.images.length > 0 && (
-          <ImageGallery images={this.state.images} />
-        )}
+        {isLoading && <Loader />}
+        {images.length > 0 && <ImageGallery images={images} />}
+        <Button />
 
         {/* <h1>Phonebook</h1>
         <ContactForm onAdd={this.addContact} />
