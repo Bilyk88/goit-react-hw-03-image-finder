@@ -1,13 +1,10 @@
 import { Component } from 'react';
-// import { ContactList } from './Contacts/ContactList';
-import initialContacts from '../contacts.json';
-// import { Filter } from './Filter/Filter';
-// import { ContactForm } from './ContactForm/ContactForm';
 import { Searchbar } from './Searchbar/Searchbar';
-import { fetchImages } from 'api';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Button } from './Button/Button';
+import { fetchImages } from 'api';
+import { Modal } from './Modal/Modal';
 
 // const storageKey = 'saved-contacts';
 
@@ -16,8 +13,7 @@ export class App extends Component {
     images: [],
     isLoading: false,
     error: false,
-    contacts: initialContacts,
-    filter: '',
+    isModalOpen: false,
   };
 
   async componentDidMount() {
@@ -46,6 +42,14 @@ export class App extends Component {
     //   );
     // }
   }
+  handleSubmit = event => {
+    event.preventDefault();
+    console.dir(event.currentTarget.value);
+  };
+
+  handleClick = () => {
+    this.setState({ isModalOpen: true });
+  };
 
   // updateFilter = newFilter => {
   //   this.setState({ filter: newFilter });
@@ -74,7 +78,7 @@ export class App extends Component {
   // };
 
   render() {
-    const { images, isLoading } = this.state;
+    const { images, isLoading, isModalOpen } = this.state;
 
     // const filterContacts = contacts.filter(contact =>
     //   contact.name.toLowerCase().includes(filter.toLowerCase())
@@ -83,21 +87,19 @@ export class App extends Component {
     return (
       <div
         style={{
-          // height: '100vh',
-          // maxWidth: '460px',
-          // padding: '15px',
-          // fontSize: 24,
-          // color: '#010101',
           display: 'grid',
           gridTemplateColumns: '1fr',
           gridGap: '16px',
           paddingBottom: '24px',
         }}
       >
-        <Searchbar />
+        <Searchbar onSubmit={this.handleSubmit} />
         {isLoading && <Loader />}
-        {images.length > 0 && <ImageGallery images={images} />}
-        <Button />
+        {images.length > 0 && (
+          <ImageGallery images={images} onClick={this.handleClick} />
+        )}
+        {images.length > 0 && <Button />}
+        {isModalOpen && <Modal images={images} />}
 
         {/* <h1>Phonebook</h1>
         <ContactForm onAdd={this.addContact} />
