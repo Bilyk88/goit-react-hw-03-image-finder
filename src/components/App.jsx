@@ -47,11 +47,10 @@ export class App extends Component {
   };
 
   openModal = image => {
-    console.log(image);
-    this.setState(prevState => ({
-      isModalOpen: !prevState.isModalOpen,
+    this.setState({
+      isModalOpen: true,
       selectedImage: image,
-    }));
+    });
   };
 
   render() {
@@ -67,13 +66,14 @@ export class App extends Component {
         }}
       >
         <Searchbar onSubmit={this.handleSubmit} />
-        {isLoading && <Loader />}
+        {/* {isLoading && <Loader />} */}
         {error && <p>error</p>}
         {/* {!images.length && <p>error</p>} */}
         {images.length > 0 && (
           <ImageGallery images={images} onClick={this.openModal} />
         )}
         {images.length > 0 && <Button onClick={this.handleLoadMore} />}
+        {isLoading && <Loader />}
         {isModalOpen && (
           <Modal>
             <img src={selectedImage} alt="" />
