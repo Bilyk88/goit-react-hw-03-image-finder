@@ -53,6 +53,12 @@ export class App extends Component {
     });
   };
 
+  closeModal = () => {
+    this.setState({
+      isModalOpen: false,
+    });
+  };
+
   render() {
     const { images, selectedImage, isLoading, isModalOpen, error } = this.state;
 
@@ -75,7 +81,7 @@ export class App extends Component {
         {images.length > 0 && <Button onClick={this.handleLoadMore} />}
         {isLoading && <Loader />}
         {isModalOpen && (
-          <Modal>
+          <Modal onClose={this.closeModal}>
             <img src={selectedImage} alt="" />
           </Modal>
         )}
