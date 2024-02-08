@@ -34,10 +34,13 @@ export const SearchButton = styled.button`
   width: 48px;
   height: 48px;
   border: 0;
-  background-image: url('../../icons/search-icon.svg');
+  background-image: url(${props => props.imageurl});
+  /* background-image: ${props => "../../icons/search-icon.svg"}; */
+  /* background-image: url('../../icons/search-icon.svg'); */
   background-size: 40%;
   background-repeat: no-repeat;
   background-position: center;
+  z-index: 1000;
   opacity: 0.6;
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;

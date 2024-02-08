@@ -28,7 +28,7 @@ export class Searchbar extends Component {
     return (
       <Header>
         <Form onSubmit={this.handleSubmit}>
-          <SearchButton type="submit">
+          <SearchButton type="submit" $imageurl="../../icons/search-icon.svg">
             <SearchButtonLabel>Search</SearchButtonLabel>
           </SearchButton>
 
