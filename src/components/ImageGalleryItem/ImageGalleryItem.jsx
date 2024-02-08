@@ -1,11 +1,17 @@
-export const ImageGalleryItem = ({ id, webformatURL, onClick }) => {
+export const ImageGalleryItem = ({
+  id,
+  webformatURL,
+  largeImageURL,
+  onClick,
+}) => {
   return (
-    <li className="ImageGalleryItem" onClick={onClick}>
+    <li className="ImageGalleryItem">
       <img
         className="ImageGalleryItem-image"
         src={webformatURL}
+        id={id}
         alt=""
-        onClick={onClick}
+        onClick={() => onClick(largeImageURL)}
       />
     </li>
   );

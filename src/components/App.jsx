@@ -6,83 +6,56 @@ import { Button } from './Button/Button';
 import { fetchImages } from 'api';
 import { Modal } from './Modal/Modal';
 
-// const storageKey = 'saved-contacts';
-
 export class App extends Component {
   state = {
     images: [],
+    value: '',
+    page: 1,
+    selectedImage: null,
     isLoading: false,
     error: false,
     isModalOpen: false,
   };
 
-  async componentDidMount() {
-    try {
-      this.setState({ isLoading: true, error: false });
-      const initialImages = await fetchImages();
-      console.log(initialImages);
-      this.setState({ images: initialImages });
-    } catch (error) {
-      this.setState({ error: true });
-    } finally {
-      this.setState({ isLoading: false });
+  componentDidMount() {}
+
+  async componentDidUpdate(prevProps, prevState) {
+    const { page, value } = this.state;
+    if (prevState.value !== value || prevState.page !== page) {
+      try {
+        this.setState({ isLoading: true, error: false });
+        const searchResult = await fetchImages({ page, value });
+        this.setState(prevState => ({
+          images: [...prevState.images, ...searchResult],
+        }));
+      } catch (error) {
+        this.setState({ error: true });
+      } finally {
+        this.setState({ isLoading: false });
+      }
     }
-
-    // const savedContacts = window.localStorage.getItem(storageKey);
-    // if (savedContacts !== null) {
-    //   this.setState({ contacts: JSON.parse(savedContacts) });
-    // }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // if (prevState.contacts !== this.state.contacts) {
-    //   window.localStorage.setItem(
-    //     storageKey,
-    //     JSON.stringify(this.state.contacts)
-    //   );
-    // }
-  }
-  handleSubmit = event => {
-    event.preventDefault();
-    console.dir(event.currentTarget.value);
+  handleSubmit = newValue => {
+    this.setState({ value: newValue, page: 1, images: [] });
   };
 
-  handleClick = () => {
-    this.setState({ isModalOpen: true });
+  handleLoadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
 
-  // updateFilter = newFilter => {
-  //   this.setState({ filter: newFilter });
-  // };
-
-  // addContact = newContact => {
-  //   this.setState(prevState => {
-  //     return prevState.contacts.some(
-  //       contact => contact.name === newContact.name
-  //     )
-  //       ? alert(`${newContact.name} is already in contacts.`)
-  //       : {
-  //           contacts: [...prevState.contacts, { ...newContact }],
-  //         };
-  //   });
-  // };
-
-  // deleteContact = contactId => {
-  //   this.setState(prevState => {
-  //     return {
-  //       contacts: prevState.contacts.filter(
-  //         contact => contact.id !== contactId
-  //       ),
-  //     };
-  //   });
-  // };
+  openModal = image => {
+    console.log(image);
+    this.setState(prevState => ({
+      isModalOpen: !prevState.isModalOpen,
+      selectedImage: image,
+    }));
+  };
 
   render() {
-    const { images, isLoading, isModalOpen } = this.state;
-
-    // const filterContacts = contacts.filter(contact =>
-    //   contact.name.toLowerCase().includes(filter.toLowerCase())
-    // );
+    const { images, selectedImage, isLoading, isModalOpen, error } = this.state;
 
     return (
       <div
@@ -95,22 +68,17 @@ export class App extends Component {
       >
         <Searchbar onSubmit={this.handleSubmit} />
         {isLoading && <Loader />}
+        {error && <p>error</p>}
+        {/* {!images.length && <p>error</p>} */}
         {images.length > 0 && (
-          <ImageGallery images={images} onClick={this.handleClick} />
+          <ImageGallery images={images} onClick={this.openModal} />
         )}
-        {images.length > 0 && <Button />}
-        {isModalOpen && <Modal images={images} />}
-
-        {/* <h1>Phonebook</h1>
-        <ContactForm onAdd={this.addContact} />
-        <h2>Contacts</h2>
-        <Filter filter={filter} onUpdateFilter={this.updateFilter} />
-        {filterContacts.length > 0 && (
-          <ContactList
-            contacts={filterContacts}
-            onDelete={this.deleteContact}
-          />
-        )} */}
+        {images.length > 0 && <Button onClick={this.handleLoadMore} />}
+        {isModalOpen && (
+          <Modal>
+            <img src={selectedImage} alt="" />
+          </Modal>
+        )}
       </div>
     );
   }
