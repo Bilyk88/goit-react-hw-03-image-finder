@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { ModalContainer, ModalOverlay } from './Modal.styled';
 
 export class Modal extends Component {
   componentDidMount() {
@@ -15,11 +16,17 @@ export class Modal extends Component {
     }
   };
 
+  handleBackdropClick = event => {
+    if (event.currentTarget === event.target) {
+      this.props.onClose();
+    }
+  };
+
   render() {
     return (
-      <div className="Overlay">
-        <div className="Modal">{this.props.children}</div>
-      </div>
+      <ModalOverlay onClick={this.handleBackdropClick}>
+        <ModalContainer>{this.props.children}</ModalContainer>
+      </ModalOverlay>
     );
   }
 }

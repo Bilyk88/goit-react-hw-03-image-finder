@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
@@ -17,19 +18,19 @@ export class App extends Component {
     isModalOpen: false,
   };
 
-  componentDidMount() {}
-
   async componentDidUpdate(prevProps, prevState) {
     const { page, value } = this.state;
     if (prevState.value !== value || prevState.page !== page) {
       try {
         this.setState({ isLoading: true, error: false });
         const searchResult = await fetchImages({ page, value });
+        console.log(searchResult);
         this.setState(prevState => ({
           images: [...prevState.images, ...searchResult],
         }));
       } catch (error) {
         this.setState({ error: true });
+        toast.error('Please, try again.');
       } finally {
         this.setState({ isLoading: false });
       }
@@ -60,7 +61,7 @@ export class App extends Component {
   };
 
   render() {
-    const { images, selectedImage, isLoading, isModalOpen, error } = this.state;
+    const { images, selectedImage, isLoading, isModalOpen } = this.state;
 
     return (
       <div
@@ -72,9 +73,6 @@ export class App extends Component {
         }}
       >
         <Searchbar onSubmit={this.handleSubmit} />
-        {/* {isLoading && <Loader />} */}
-        {error && <p>error</p>}
-        {/* {!images.length && <p>error</p>} */}
         {images.length > 0 && (
           <ImageGallery images={images} onClick={this.openModal} />
         )}
@@ -85,6 +83,7 @@ export class App extends Component {
             <img src={selectedImage} alt="" />
           </Modal>
         )}
+        <Toaster position="top-right" />
       </div>
     );
   }
