@@ -75,7 +75,9 @@ export class App extends Component {
         {images.length > 0 && (
           <ImageGallery images={images} onClick={this.openModal} />
         )}
-        {images.length > 0 && <Button onClick={this.handleLoadMore} />}
+        {images.length > 0 && !isLoading && (
+          <Button onClick={this.handleLoadMore} />
+        )}
         {isLoading && <Loader />}
         {isModalOpen && (
           <Modal onClose={this.closeModal}>
